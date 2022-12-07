@@ -123,7 +123,7 @@ app.get("/", async (req, res) => {
 
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Connected to MONGODB");
-  app.listen(process.env.GUILD_ID || 3000, () => {
-    console.log("Listening to port", process.env.GUILD_ID || 3000);
+  app.listen(process.env.PORT || 8999, () => {
+    console.log("Listening to port", process.env.PORT || 8999);
   });
 });
