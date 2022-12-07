@@ -103,7 +103,7 @@ app.get("/register_commands", async (req, res) => {
       options: [
         {
           type: "STRING",
-          name: "Task name",
+          name: "task-name",
           required: true,
         },
       ],
