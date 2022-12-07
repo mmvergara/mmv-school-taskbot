@@ -1,0 +1,22 @@
+{
+  "name": "mmv-schooltaskbot",
+  "version": "1.0.0",
+  "description": "School Task Manager",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node ./dist/index.js"
+  },
+  "author": "mmvergara",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "discord-interactions": "^3.2.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.11",
+    "typescript": "^4.9.3"
+  }
+}
