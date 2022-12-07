@@ -24,6 +24,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
 
     if ((interaction.data.name = "schedule")) {
+      console.log(`Yo ${interaction.member.user.username}! useD SCHEDULE COMMAND`);
       const subjectOnDayX = [
         {
           name: "Monday",
@@ -56,7 +57,6 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       ];
       let dateToday = new Date().getDay();
       if (dateToday == 0) dateToday = 7;
-
       const todayScheduleInfo = subjectOnDayX[dateToday - 1];
       const embeds = [
         {
