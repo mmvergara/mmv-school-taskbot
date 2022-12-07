@@ -16,7 +16,6 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   console.log({ interaction });
   console.log(`======================================================`);
 
-
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     if (interaction.data.name == "yo") {
       return res.send({
@@ -26,7 +25,14 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         },
       });
     }
-
+    if (interaction.data.name == "createtask") {
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `Yo ${interaction.member.user.username}!`,
+        },
+      });
+    }
 
     if ((interaction.data.name = "schedule")) {
       console.log(`Yo ${interaction.member.user.username}! useD SCHEDULE COMMAND`);
@@ -78,10 +84,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `Yo ${interaction.member.user.username}!`,
-          embeds,
-        },
+        data: { embeds },
       });
     }
   }
@@ -95,13 +98,19 @@ app.get("/register_commands", async (req, res) => {
       options: [],
     },
     {
-      name: "schedule",
-      description: "BSIT 2-A School Schedule",
-      options: [],
+      name: "createtask",
+      description: "See all tasks",
+      options: [
+        {
+          type: "STRING",
+          name: "Task name",
+          required: true,
+        },
+      ],
     },
     {
-      name: "yo",
-      description: "yo!",
+      name: "schedule",
+      description: "BSIT 2-A School Schedule",
       options: [],
     },
   ];
