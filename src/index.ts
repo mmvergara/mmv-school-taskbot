@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
-  const interaction = req.body;
+  const interaction = req.body as any;
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     if (interaction.data.name == "yo") {
@@ -70,7 +70,14 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
           color: 4321431,
         },
       ];
-      return res.send({ embeds });
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `Yo ${interaction.member.user.username}!`,
+          embeds,
+        },
+      });
     }
   }
 });
@@ -102,6 +109,11 @@ app.get("/register_commands", async (req, res) => {
     {
       name: "schedule",
       description: "BSIT 2-A School Schedule",
+      options: [],
+    },
+    {
+      name: "yo",
+      description: "yo!",
       options: [],
     },
   ];
