@@ -52,7 +52,10 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "see-tasks") {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
-        return { name: `id:${x.taskCustomId} ,${x.taskInfo}`, value: x.taskDescription };
+        return {
+          name: `${x.taskInfo} [id:${x.taskCustomId}] \n =================`,
+          value: x.taskDescription,
+        };
       });
       const embeds = [
         {
