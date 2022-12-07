@@ -90,46 +90,6 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   }
 });
 
-app.get("/register_commands", async (req, res) => {
-  let slash_commands = [
-    {
-      name: "seetasks",
-      description: "See all tasks",
-      options: [],
-    },
-    {
-      name: "createtask",
-      description: "See all tasks",
-      options: [
-        {
-          type: "STRING",
-          name: "task-name",
-          required: true,
-        },
-      ],
-    },
-    {
-      name: "schedule",
-      description: "BSIT 2-A School Schedule",
-      options: [],
-    },
-  ];
-  try {
-    // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
-    let discord_response = await discord_api.put(
-      `/applications/${APPLICATION_ID}/guilds/${GUILD_ID}/commands`,
-      slash_commands
-    );
-    console.log(discord_response.data);
-    return res.send("commands have been registered");
-  } catch (e: any) {
-    console.log(e);
-    console.error(e.code);
-    console.error(e.response?.data);
-    return res.send(`${e.code} error from discord`);
-  }
-});
-
 app.get("/", async (req, res) => {
   return res.send("Hello World");
 });
