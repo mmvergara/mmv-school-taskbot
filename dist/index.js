@@ -7,12 +7,11 @@ const express_1 = __importDefault(require("express"));
 const api_1 = require("./api");
 const discord_interactions_1 = require("discord-interactions");
 const config_1 = require("./config");
+const mongoose_1 = __importDefault(require("mongoose"));
 const app = (0, express_1.default)();
 app.post("/interactions", (0, discord_interactions_1.verifyKeyMiddleware)(config_1.PUBLIC_KEY), async (req, res) => {
     const interaction = req.body;
-    console.log();
     if (interaction.type === discord_interactions_1.InteractionType.APPLICATION_COMMAND) {
-        console.log(interaction.data.name);
         if (interaction.data.name == "yo") {
             return res.send({
                 type: discord_interactions_1.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -21,47 +20,82 @@ app.post("/interactions", (0, discord_interactions_1.verifyKeyMiddleware)(config
                 },
             });
         }
-        if (interaction.data.name == "dm") {
-            // https://discord.com/developers/docs/resources/user#create-dm
-            let c = (await api_1.discord_api.post(`/users/@me/channels`, {
-                recipient_id: interaction.member.user.id,
-            })).data;
-            try {
-                // https://discord.com/developers/docs/resources/channel#create-message
-                let res = await api_1.discord_api.post(`/channels/${c.id}/messages`, {
-                    content: "Yo! I got your slash command. I am not able to respond to DMs just slash commands.",
-                });
-                console.log(res.data);
-            }
-            catch (e) {
-                console.log(e);
-            }
-            return res.send({
-                // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-                type: discord_interactions_1.InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                data: {
-                    content: "👍",
+        if ((interaction.data.name = "schedule")) {
+            const subjectOnDayX = [
+                {
+                    name: "Monday",
+                    value: "CC104 - **8:00am** \n GE-CW - **1:00pm**",
                 },
-            });
+                {
+                    name: "Tuesday",
+                    value: "GE-ELECT - **8:00am** \n PE 3 - **10:00am** \n GE AA - **1:00pm**\n",
+                },
+                {
+                    name: "Wednesday",
+                    value: "CC104 - **8:00am** \n GE-CW - **1:00pm**",
+                },
+                {
+                    name: "Thursday",
+                    value: "GE-ELECT - **8:00am** \n PE 3 - **10:00am** \n GE AA - **1:00pm**",
+                },
+                {
+                    name: "Friday",
+                    value: "CC104 - **8:00am**\n PE 3 - **10:00am**",
+                },
+                {
+                    name: "Saturday",
+                    value: "WALANG PASOK",
+                },
+                {
+                    name: "Sunday",
+                    value: "WALANG PASOK",
+                },
+            ];
+            let dateToday = new Date().getDay();
+            if (dateToday == 0)
+                dateToday = 7;
+            const todayScheduleInfo = subjectOnDayX[dateToday - 1];
+            const embeds = [
+                {
+                    title: "Schedule of BSIT 2-A",
+                    description: `======**Today is ${todayScheduleInfo.name}**======\n ${todayScheduleInfo.value} \n ======**${todayScheduleInfo.name}**======\n`,
+                    url: "https://i.ibb.co/StGcn7B/schedule.jpg",
+                    image: {
+                        url: "https://i.ibb.co/StGcn7B/schedule.jpg",
+                    },
+                    fields: [...subjectOnDayX.slice(0, 5)],
+                    color: 4321431,
+                },
+            ];
+            return res.send({ embeds });
         }
     }
 });
 app.get("/register_commands", async (req, res) => {
     let slash_commands = [
         {
-            name: "yo",
-            description: "replies with Yo!",
-            options: [],
+            name: "create-tasks",
+            description: "Create a new task",
+            options: [
+                {
+                    type: "STRING",
+                    name: "Task Subject ex. CC104",
+                    required: true,
+                },
+                {
+                    type: "STRING",
+                    name: "Task Description Assignment",
+                    required: true,
+                },
+            ],
         },
         {
-            name: "dm",
-            description: "sends user a DM",
-            options: [],
+            name: "see-tasks",
+            description: "See all tasks",
         },
         {
             name: "schedule",
             description: "BSIT 2-A School Schedule",
-            options: [],
         },
     ];
     try {
@@ -79,6 +113,9 @@ app.get("/register_commands", async (req, res) => {
 app.get("/", async (req, res) => {
     return res.send("Hello World");
 });
-app.listen(8999, () => {
-    console.log("Listening to port");
+mongoose_1.default.connect(config_1.MONGODB_URI).then(() => {
+    console.log("Connected to MONGODB");
+    app.listen(process.env.GUILD_ID || 3000, () => {
+        console.log("Listening to port", process.env.GUILD_ID || 3000);
+    });
 });
