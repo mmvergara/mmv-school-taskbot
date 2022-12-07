@@ -5,14 +5,15 @@ import {
   InteractionResponseType,
   verifyKeyMiddleware,
 } from "discord-interactions";
-import { APPLICATION_ID, GUILD_ID, PUBLIC_KEY } from "./config";
+
+import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
+import mongoose from "mongoose";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-    console.log(interaction.data.name);
     if (interaction.data.name == "yo") {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -77,14 +78,28 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 app.get("/register_commands", async (req, res) => {
   let slash_commands = [
     {
-      name: "yo",
-      description: "replies with Yo!",
-      options: [],
+      name: "create-tasks",
+      description: "Create a new task",
+      options: [
+        {
+          type: "STRING",
+          name: "Task Subject ex. CC104",
+          required: true,
+        },
+        {
+          type: "STRING",
+          name: "Task Description Assignment",
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "see-tasks",
+      description: "See all tasks",
     },
     {
       name: "schedule",
       description: "BSIT 2-A School Schedule",
-      options: [],
     },
   ];
   try {
@@ -106,6 +121,9 @@ app.get("/", async (req, res) => {
   return res.send("Hello World");
 });
 
-app.listen(process.env.GUILD_ID || 3000, () => {
-  console.log("Listening to port");
+mongoose.connect(MONGODB_URI).then(() => {
+  console.log("Connected to MONGODB");
+  app.listen(process.env.GUILD_ID || 3000, () => {
+    console.log("Listening to port", process.env.GUILD_ID || 3000);
+  });
 });

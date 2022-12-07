@@ -1,5 +1,5 @@
-import axios from 'axios'
-import { TOKEN } from '../config';
+import axios from "axios";
+import { TOKEN } from "../config";
 
 export const discord_api = axios.create({
   baseURL: "https://discord.com/api/",
