@@ -9,6 +9,7 @@ import {
 import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import mongoose from "mongoose";
 import taskModel from "./models/taskModel";
+import { slashCommands } from "./commands/commands";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
@@ -44,7 +45,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `${interaction.member.user.username} created a new task \n${taskInfo} \n${taskDescription}`,
+          content: `**${interaction.member.user.username} created a new task** \n${taskInfo} \n${taskDescription}`,
         },
       });
     }
@@ -130,6 +131,21 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
 app.get("/", async (req, res) => {
   return res.send("Hello World");
+});
+
+app.get("/rc", async (req, res) => {
+  try {
+    // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
+    let discord_response = await discord_api.put(
+      `/applications/${APPLICATION_ID}/guilds/${GUILD_ID}/commands`,
+      slashCommands
+    );
+    console.log(discord_response.data);
+    return res.send("commands have been registered");
+  } catch (e: any) {
+    console.log(e);
+    return res.send(`${e.code} error from discord`);
+  }
 });
 
 mongoose.connect(MONGODB_URI).then(() => {
