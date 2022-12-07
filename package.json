@@ -4,6 +4,7 @@
   "description": "School Task Manager",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "start": "tsc && node ./dist/index.js"
   },
   "author": "mmvergara",
