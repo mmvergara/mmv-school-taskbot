@@ -19,6 +19,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     console.log(interaction.data);
+
     if (interaction.data.name == "yo") {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -27,24 +28,44 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         },
       });
     }
+
     if (interaction.data.name == "createtask") {
       const taskInfo = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
-      const totalTask = (await taskModel.find()).length;
+      const totalTask = (await taskModel.find({})).length;
+      console.log({ totalTask });
       const newTask = new taskModel({ taskDescription, taskInfo, taskCustomId: totalTask + 1 });
       await newTask.save();
-      
-      console.log({ taskInfo, taskDescription, taskCustomId: totalTask + 1 });
 
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `Yo ${interaction.member.user.username}!`,
+          content: `${interaction.member.user.username} created a new task \n ${taskInfo} \n ${taskDescription}`,
         },
       });
     }
 
-    if ((interaction.data.name = "schedule")) {
+    if (interaction.data.name == "seetasks") {
+      const allTasks = await taskModel.find({});
+      const fields = allTasks.map((x) => {
+        return { name: `id:${x.taskCustomId} ,${x.taskInfo}`, value: x.taskDescription };
+      });
+      const embeds = [
+        {
+          title: "All Tasks",
+          description: `GAWIN NYONA TATAMAD NYO!`,
+          fields,
+          color: 4321431,
+        },
+      ];
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { embeds },
+      });
+    }
+
+    if (interaction.data.name == "schedule") {
       console.log(`Yo ${interaction.member.user.username}! useD SCHEDULE COMMAND`);
       const subjectOnDayX = [
         {
