@@ -53,7 +53,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `${x.taskInfo} [id:${x.taskCustomId}] \n =================`,
+          name: `================= \n ${x.taskInfo} [id:${x.taskCustomId}]`,
           value: x.taskDescription,
         };
       });
