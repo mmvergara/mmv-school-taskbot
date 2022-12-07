@@ -96,10 +96,12 @@ app.get("/register_commands", async (req, res) => {
     {
       name: "see-tasks",
       description: "See all tasks",
+      options: [],
     },
     {
       name: "schedule",
       description: "BSIT 2-A School Schedule",
+      options: [],
     },
   ];
   try {
