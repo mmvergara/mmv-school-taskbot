@@ -29,12 +29,16 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
 
-    if (interaction.data.name == "createtask") {
+    if (interaction.data.name == "create-task") {
       const taskInfo = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
       const totalTask = (await taskModel.find({})).length;
       console.log({ totalTask });
-      const newTask = new taskModel({ taskDescription, taskInfo, taskCustomId: totalTask + 1 });
+      const newTask = new taskModel({
+        taskDescription,
+        taskInfo,
+        taskCustomId: String(totalTask + 1),
+      });
       await newTask.save();
 
       return res.send({
@@ -45,7 +49,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
 
-    if (interaction.data.name == "seetasks") {
+    if (interaction.data.name == "see-tasks") {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return { name: `id:${x.taskCustomId} ,${x.taskInfo}`, value: x.taskDescription };
