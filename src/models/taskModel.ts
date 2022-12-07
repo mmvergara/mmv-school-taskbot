@@ -1,15 +1,13 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
-const { Types } = Schema;
 
 const messageSchema = new Schema(
   {
-    messageAuthor: {
-      type: Types.ObjectId,
-    },
-    messageContent: { type: String, required: true },
+    taskInfo: { type: String, required: true },
+    taskDescription: { type: String, required: true },
+    taskCustomId: { type: Number, required: true },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Message", messageSchema);
+export default mongoose.model("tasks", messageSchema);
