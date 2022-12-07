@@ -75,26 +75,27 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   }
 });
 
+// {
+//   name: "create-tasks",
+//   description: "Create a new task",
+//   options: [
+//     {
+//       type: "STRING",
+//       name: "Task Subject ex. CC104",
+//       required: true,
+//     },
+//     {
+//       type: "STRING",
+//       name: "Task Description Assignment",
+//       required: true,
+//     },
+//   ],
+// },
+
 app.get("/register_commands", async (req, res) => {
   let slash_commands = [
     {
-      name: "create-tasks",
-      description: "Create a new task",
-      options: [
-        {
-          type: "STRING",
-          name: "Task Subject ex. CC104",
-          required: true,
-        },
-        {
-          type: "STRING",
-          name: "Task Description Assignment",
-          required: true,
-        },
-      ],
-    },
-    {
-      name: "see-tasks",
+      name: "seetasks",
       description: "See all tasks",
       options: [],
     },
