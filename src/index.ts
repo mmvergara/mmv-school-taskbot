@@ -44,7 +44,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `${interaction.member.user.username} created a new task \n ${taskInfo} \n ${taskDescription}`,
+          content: `${interaction.member.user.username} created a new task \n${taskInfo} \n${taskDescription}`,
         },
       });
     }
@@ -53,7 +53,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `================= \n ${x.taskInfo} [id:${x.taskCustomId}]`,
+          name: `================= \n${x.taskInfo} [id:${x.taskCustomId}]`,
           value: x.taskDescription,
         };
       });
