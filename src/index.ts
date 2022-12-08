@@ -121,7 +121,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `\u200B \n${x.taskInfo} [id:${x.taskCustomId}]`,
+          name: `\u200B \n${x.taskInfo} - id: ${x.taskCustomId}`,
           value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
         };
       });
