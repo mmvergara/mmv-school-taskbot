@@ -23,6 +23,14 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "delete-task") {
       const customTaskId = interaction.data.options[0].value;
       const task = await taskModel.findOneAndDelete({ taskCustomId: customTaskId });
+
+      if (!task) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content: `Task Id of ${customTaskId} does not exist` },
+        });
+      }
+
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -34,8 +42,13 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-link") {
       const linkName = interaction.data.options[0].value;
       const linkUrl = interaction.data.options[1].value;
+      const allLinks = await linkModel.find({});
 
-      const newLink = new linkModel({ linkName, linkUrl });
+      const newLink = new linkModel({
+        linkName,
+        linkUrl,
+        linkCustomId: String(allLinks ? allLinks.length : 0),
+      });
       await newLink.save();
 
       const embeds = [
@@ -57,13 +70,14 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
     if (interaction.data.name == "delete-link") {
+      const allLinks = await linkModel.find({});
     }
 
     if (interaction.data.name == "see-links") {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `\u200B`,
+          name: `id: ${x.linkCustomId}`,
           value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
