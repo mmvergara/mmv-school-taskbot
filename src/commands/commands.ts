@@ -23,7 +23,7 @@ export const slashCommands = [
     options: [
       {
         type: 3,
-        name: "Enter the task ID",
+        name: "enter-task-id",
         description: "You can view the task id by doing /see-tasks",
         required: true,
       },
