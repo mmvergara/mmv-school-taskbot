@@ -42,11 +42,11 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-link") {
       const linkName = interaction.data.options[0].value;
       const linkUrl = interaction.data.options[1].value;
-      const linkAlreadyExists = await linkModel.find({ linkName: linkName.trim() });
+      const linkAlreadyExists = await linkModel.findOne({ linkName: linkName.trim() });
       if (linkAlreadyExists) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `task name of ${linkName} already exist!!! Try a new one` },
+          data: { content: `Link name of ${linkName} already exist!!! Try a new one` },
         });
       }
 
@@ -121,12 +121,12 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const taskName = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
       const taskDeadline = interaction.data.options[2]?.value;
-      const taskAlreadyExist = await taskModel.find({ taskName });
-      console.log({taskAlreadyExist})
+      const taskAlreadyExist = await taskModel.findOne({ taskName: taskName.trim() });
+      console.log({ taskAlreadyExist });
       if (taskAlreadyExist) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `task ${taskName} already exist` },
+          data: { content: `task ${taskName} already exist!!! Try a new one` },
         });
       }
 
