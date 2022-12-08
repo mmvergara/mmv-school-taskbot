@@ -120,9 +120,9 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-task") {
       const taskName = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
-      const taskDeadline = interaction.data.options[2]?.value;
+      const taskDeadline = interaction.data.options[2].value;
       const taskAlreadyExist = await taskModel.findOne({ taskName: taskName.trim() });
-      console.log({ taskAlreadyExist });
+
       if (taskAlreadyExist) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -133,7 +133,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const newTask = new taskModel({
         taskDescription,
         taskName: taskName.trim(),
-        taskDeadline: taskDeadline || "",
+        taskDeadline: taskDeadline,
       });
       await newTask.save();
 
@@ -143,7 +143,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
           content: `**${
             interaction.member.user.username
           } created a new task** \n${taskName} \n${taskDescription}\n ${
-            taskDeadline ? `until: ${taskDeadline}` : ""
+            taskDeadline !== "null" ? `deadline: ${taskDeadline}` : ""
           }`,
         },
       });

@@ -18,8 +18,8 @@ const tasks = [
       {
         type: 3,
         name: "task-deadline",
-        description: "Deadline (optional)",
-        required: false,
+        description: "write 'null' if no deadline",
+        required: true,
       },
     ],
   },
