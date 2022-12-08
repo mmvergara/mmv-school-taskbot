@@ -82,7 +82,7 @@ const links = [
 
 export const slashCommands = [
   ...tasks,
-
+  ...links,
   {
     name: "schedule",
     description: "BSIT 2-A School Schedule",
