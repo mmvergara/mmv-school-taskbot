@@ -12,7 +12,25 @@ export const slashCommands = [
       {
         type: 3,
         name: "task-description",
-        description: "Description of the taskk",
+        description: "Description of the task",
+        required: true,
+      },
+    ],
+  },
+  {
+    name: "create-link",
+    description: "create a new hyperlink",
+    options: [
+      {
+        type: 3,
+        name: "link-name",
+        description: "ex. facebook",
+        required: true,
+      },
+      {
+        type: 3,
+        name: "link-url",
+        description: "ex. www.facebook.com",
         required: true,
       },
     ],
@@ -37,6 +55,11 @@ export const slashCommands = [
   {
     name: "see-tasks",
     description: "See all tasks",
+    options: [],
+  },
+  {
+    name: "see-links",
+    description: "See all links",
     options: [],
   },
 ];
