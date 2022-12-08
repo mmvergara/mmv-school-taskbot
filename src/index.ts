@@ -10,6 +10,7 @@ import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import mongoose from "mongoose";
 import taskModel from "./models/taskModel";
 import { slashCommands } from "./commands/commands";
+import linkModel from "./models/linkModel";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
@@ -27,6 +28,42 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         data: {
           content: `**${interaction.member.user.username} deleted a task** \n${task?.taskInfo} \n${task?.taskDescription}`,
         },
+      });
+    }
+
+    if (interaction.data.name == "create-link") {
+      const linkName = interaction.data.options[0].value;
+      const linkUrl = interaction.data.options[1].value;
+
+      const newLink = new linkModel({ linkName, linkUrl });
+      await newLink.save();
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `**${interaction.member.user.username} created a new link** \n[${linkName}](${linkUrl})`,
+        },
+      });
+    }
+    if (interaction.data.name == "see-links") {
+      const allLinks = await linkModel.find({});
+      const fields = allLinks.map((x) => {
+        return {
+          name: `[${x.linkName}](${x.linkUrl})\n`,
+          value: `-`,
+        };
+      });
+      const embeds = [
+        {
+          title: "All Links",
+          fields,
+          color: 4321431,
+        },
+      ];
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { embeds },
       });
     }
 
@@ -61,7 +98,9 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const embeds = [
         {
           title: "All Tasks",
-          description: `GAWIN NYONA TATAMAD NYO!`,
+          description: `${
+            !allTasks || allTasks.length === 0 ? "No ongoing Task" : "Goodluck sanyo!"
+          }`,
           fields,
           color: 4321431,
         },
@@ -111,12 +150,12 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const embeds = [
         {
           title: "Schedule of BSIT 2-A",
-          description: `======**Today is ${todayScheduleInfo.name}**======\n ${todayScheduleInfo.value} \n ======**${todayScheduleInfo.name}**======\n`,
+          description: `======**Today is ${todayScheduleInfo.name}**======\n ${todayScheduleInfo.value} \n ======**Today is ${todayScheduleInfo.name}**======\n`,
           url: "https://i.ibb.co/StGcn7B/schedule.jpg",
           image: {
             url: "https://i.ibb.co/StGcn7B/schedule.jpg",
           },
-          fields: [...subjectOnDayX.slice(0, 5)],
+          // fields: [...subjectOnDayX.slice(0, 5)],
           color: 4321431,
         },
       ];
