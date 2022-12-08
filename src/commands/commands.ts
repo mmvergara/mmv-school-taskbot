@@ -1,4 +1,4 @@
-export const slashCommands = [
+const tasks = [
   {
     name: "create-task",
     description: "create a new school task",
@@ -24,6 +24,26 @@ export const slashCommands = [
     ],
   },
   {
+    name: "delete-task",
+    description: "delete a task by ID",
+    options: [
+      {
+        type: 3,
+        name: "enter-task-id",
+        description: "You can view the task id by doing /see-tasks",
+        required: true,
+      },
+    ],
+  },
+  {
+    name: "see-tasks",
+    description: "See all tasks",
+    options: [],
+  },
+];
+
+const links = [
+  {
     name: "create-link",
     description: "create a new hyperlink",
     options: [
@@ -42,30 +62,30 @@ export const slashCommands = [
     ],
   },
   {
-    name: "delete-task",
-    description: "delete a task by ID",
+    name: "see-links",
+    description: "See all links",
+    options: [],
+  },
+  {
+    name: "delete-link",
+    description: "delete a link by id",
     options: [
       {
         type: 3,
-        name: "enter-task-id",
-        description: "You can view the task id by doing /see-tasks",
+        name: "enter-link-id",
+        description: "You can view the linkk id by doing /see-links",
         required: true,
       },
     ],
   },
+];
+
+export const slashCommands = [
+  ...tasks,
+
   {
     name: "schedule",
     description: "BSIT 2-A School Schedule",
-    options: [],
-  },
-  {
-    name: "see-tasks",
-    description: "See all tasks",
-    options: [],
-  },
-  {
-    name: "see-links",
-    description: "See all links",
     options: [],
   },
 ];
