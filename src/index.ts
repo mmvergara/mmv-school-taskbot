@@ -71,7 +71,8 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
     if (interaction.data.name == "delete-link") {
       const linkCustomId = interaction.data.options[0].value;
-      const allLinks = await linkModel.findOneAndDelete({});
+      const allLinks = await linkModel.findOneAndDelete({ linkCustomId });
+
       if (!allLinks) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
