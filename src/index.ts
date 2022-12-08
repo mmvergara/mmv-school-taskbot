@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 import taskModel from "./models/taskModel";
 import { slashCommands } from "./commands/commands";
 import linkModel from "./models/linkModel";
+import { deleteTaskCommand } from "./controllers/taskControllers";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
@@ -21,22 +22,23 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     if (interaction.data.name == "delete-task") {
-      const taskName = interaction.data.options[0].value;
-      const task = await taskModel.findOneAndDelete({ taskName });
+      return await deleteTaskCommand(interaction, res);
+      // const taskName = interaction.data.options[0].value;
+      // const task = await taskModel.findOneAndDelete({ taskName });
 
-      if (!task) {
-        return res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `Task name of ${taskName} does not exist` },
-        });
-      }
+      // if (!task) {
+      //   return res.send({
+      //     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      //     data: { content: `Task name of ${taskName} does not exist` },
+      //   });
+      // }
 
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `**${interaction.member.user.username} deleted a task** \n${task?.taskName} \n${task?.taskDescription}`,
-        },
-      });
+      // return res.send({
+      //   type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      //   data: {
+      //     content: `**${interaction.member.user.username} deleted a task** \n${task?.taskName} \n${task?.taskDescription}`,
+      //   },
+      // });
     }
 
     if (interaction.data.name == "create-link") {

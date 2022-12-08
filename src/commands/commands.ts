@@ -68,12 +68,12 @@ const links = [
   },
   {
     name: "delete-link",
-    description: "delete a link by id",
+    description: "delete a link by name",
     options: [
       {
         type: 3,
-        name: "enter-link-id",
-        description: "You can view the linkk id by doing /see-links",
+        name: "enter-link-name",
+        description: "You can view the link name by doing /see-links",
         required: true,
       },
     ],
