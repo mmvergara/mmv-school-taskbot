@@ -49,8 +49,8 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `[${x.linkName}](${x.linkUrl})\n`,
-          value: `-`,
+          name: `-------------\n`,
+          value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
       const embeds = [
