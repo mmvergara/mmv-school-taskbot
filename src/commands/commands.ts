@@ -19,7 +19,7 @@ export const slashCommands = [
         type: 3,
         name: "task-deadline",
         description: "Deadline (optional)",
-        required: true,
+        required: false,
       },
     ],
   },

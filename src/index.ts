@@ -121,7 +121,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `================= \n${x.taskInfo} [id:${x.taskCustomId}]`,
+          name: `\u200B \n${x.taskInfo} [id:${x.taskCustomId}]`,
           value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
         };
       });
@@ -180,7 +180,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const embeds = [
         {
           title: "Schedule of BSIT 2-A",
-          description: `======**Today is ${todayScheduleInfo.name}**======\n ${todayScheduleInfo.value} \n ======**Today is ${todayScheduleInfo.name}**======\n`,
+          description: `======**Today is ${todayScheduleInfo.name}**======\n ${todayScheduleInfo.value} \n ======**Today is ${todayScheduleInfo.name}**======\n \u200B \u200B`,
           url: "https://i.ibb.co/StGcn7B/schedule.jpg",
           image: {
             url: "https://i.ibb.co/StGcn7B/schedule.jpg",
