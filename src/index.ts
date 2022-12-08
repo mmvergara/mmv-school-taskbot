@@ -106,6 +106,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         {
           title: "All Links",
           fields,
+          description: `${allLinks.length === 0 ? "Found no links" : ""}`,
           color: 0x009191,
         },
       ];
@@ -121,10 +122,11 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const taskDescription = interaction.data.options[1].value;
       const taskDeadline = interaction.data.options[2]?.value;
       const taskAlreadyExist = await taskModel.find({ taskName });
+      console.log({taskAlreadyExist})
       if (taskAlreadyExist) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `task  ${taskName} does not exist` },
+          data: { content: `task ${taskName} already exist` },
         });
       }
 
