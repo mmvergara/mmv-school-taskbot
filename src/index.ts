@@ -21,20 +21,20 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     if (interaction.data.name == "delete-task") {
-      const customTaskId = interaction.data.options[0].value;
-      const task = await taskModel.findOneAndDelete({ taskCustomId: customTaskId });
+      const taskName = interaction.data.options[0].value;
+      const task = await taskModel.findOneAndDelete({ taskName });
 
       if (!task) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `Task Id of ${customTaskId} does not exist` },
+          data: { content: `Task name of ${taskName} does not exist` },
         });
       }
 
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `**${interaction.member.user.username} deleted a task** \n${task?.taskInfo} \n${task?.taskDescription}`,
+          content: `**${interaction.member.user.username} deleted a task** \n${task?.taskName} \n${task?.taskDescription}`,
         },
       });
     }
@@ -42,12 +42,17 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-link") {
       const linkName = interaction.data.options[0].value;
       const linkUrl = interaction.data.options[1].value;
-      const allLinks = await linkModel.find({});
+      const linkAlreadyExists = await linkModel.find({ linkName: linkName.trim() });
+      if (linkAlreadyExists) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content: `task name of ${linkName} already exist!!! Try a new one` },
+        });
+      }
 
       const newLink = new linkModel({
         linkName,
         linkUrl,
-        linkCustomId: String(allLinks ? allLinks.length : 0),
       });
       await newLink.save();
 
@@ -69,14 +74,15 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         data: { embeds },
       });
     }
+
     if (interaction.data.name == "delete-link") {
-      const linkCustomId = interaction.data.options[0].value;
-      const allLinks = await linkModel.findOneAndDelete({ linkCustomId });
+      const linkName = interaction.data.options[0].value;
+      const allLinks = await linkModel.findOneAndDelete({ linkName: linkName.trim() });
 
       if (!allLinks) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: { content: `Link Id of ${linkCustomId} does not exist` },
+          data: { content: `Link ${linkName} does not exist` },
         });
       }
 
@@ -92,7 +98,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `id: ${x.linkCustomId}`,
+          name: `\u200B`,
           value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
@@ -111,16 +117,21 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
 
     if (interaction.data.name == "create-task") {
-      const taskInfo = interaction.data.options[0].value;
+      const taskName = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
       const taskDeadline = interaction.data.options[2]?.value;
-      const totalTask = (await taskModel.find({})).length;
+      const taskAlreadyExist = await taskModel.find({ taskName });
+      if (taskAlreadyExist) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content: `task  ${taskName} does not exist` },
+        });
+      }
 
       const newTask = new taskModel({
         taskDescription,
-        taskInfo,
+        taskName: taskName.trim(),
         taskDeadline: taskDeadline || "",
-        taskCustomId: String(totalTask + 1),
       });
       await newTask.save();
 
@@ -129,7 +140,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         data: {
           content: `**${
             interaction.member.user.username
-          } created a new task** \n${taskInfo} \n${taskDescription}\n ${
+          } created a new task** \n${taskName} \n${taskDescription}\n ${
             taskDeadline ? `until: ${taskDeadline}` : ""
           }`,
         },
@@ -140,7 +151,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `\u200B \n${x.taskInfo} - id { ${x.taskCustomId} }`,
+          name: `\u200B \n${x.taskName} }`,
           value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
         };
       });

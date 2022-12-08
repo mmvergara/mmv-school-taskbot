@@ -1,12 +1,12 @@
 const tasks = [
   {
     name: "create-task",
-    description: "create a new school task",
+    description: "create a new task",
     options: [
       {
         type: 3,
-        name: "task-subject",
-        description: "subject of the task ex. CC104",
+        name: "task-name",
+        description: "CC104 Assignment",
         required: true,
       },
       {
