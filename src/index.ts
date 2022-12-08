@@ -63,7 +63,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `==================`,
+          name: `\u200B`,
           value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
@@ -71,7 +71,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         {
           title: "All Links",
           fields,
-          color: 4321431,
+          color: 0x009191,
         },
       ];
 
