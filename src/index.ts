@@ -142,7 +142,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         data: {
           content: `**${
             interaction.member.user.username
-          } created a new task** \n${taskName} \n${taskDescription}\n ${
+          } created a new task** \n${taskName} \n${taskDescription}\n${
             taskDeadline !== "null" ? `deadline: ${taskDeadline}` : ""
           }`,
         },
@@ -153,8 +153,10 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `\u200B \n${x.taskName} }`,
-          value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
+          name: `\u200B \n${x.taskName}`,
+          value: `${x.taskDescription} \n ${
+            x.taskDeadline !== "null" ? `until: ${x.taskDeadline}` : ""
+          }`,
         };
       });
       const embeds = [

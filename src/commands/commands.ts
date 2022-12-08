@@ -25,12 +25,12 @@ const tasks = [
   },
   {
     name: "delete-task",
-    description: "delete a task by ID",
+    description: "delete a task by aname",
     options: [
       {
         type: 3,
-        name: "enter-task-id",
-        description: "You can view the task id by doing /see-tasks",
+        name: "enter-task-name",
+        description: "You can view the task name by doing /see-tasks",
         required: true,
       },
     ],
