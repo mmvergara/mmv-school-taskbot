@@ -113,7 +113,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-task") {
       const taskInfo = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
-      const taskDeadline = interaction.data.options[2].value;
+      const taskDeadline = interaction.data.options[2].value || null;
       const totalTask = (await taskModel.find({})).length;
 
       const newTask = new taskModel({
@@ -127,7 +127,11 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `**${interaction.member.user.username} created a new task** \n${taskInfo} \n${taskDescription}\nuntil: ${taskDeadline}`,
+          content: `**${
+            interaction.member.user.username
+          } created a new task** \n${taskInfo} \n${taskDescription}\n ${
+            taskDeadline ? `until: ${taskDeadline}` : ""
+          }`,
         },
       });
     }
