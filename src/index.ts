@@ -113,13 +113,13 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-task") {
       const taskInfo = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
-      const taskDeadline = interaction.data.options[2].value || null;
+      const taskDeadline = interaction.data.options[2]?.value;
       const totalTask = (await taskModel.find({})).length;
 
       const newTask = new taskModel({
         taskDescription,
         taskInfo,
-        taskDeadline,
+        taskDeadline: taskDeadline || "",
         taskCustomId: String(totalTask + 1),
       });
       await newTask.save();
