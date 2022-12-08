@@ -70,7 +70,21 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
     if (interaction.data.name == "delete-link") {
-      const allLinks = await linkModel.find({});
+      const linkCustomId = interaction.data.options[0].value;
+      const allLinks = await linkModel.findOneAndDelete({});
+      if (!allLinks) {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content: `Link Id of ${linkCustomId} does not exist` },
+        });
+      }
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `**${interaction.member.user.username} deleted a link** \n[${allLinks?.linkName}](${allLinks?.linkUrl})`,
+        },
+      });
     }
 
     if (interaction.data.name == "see-links") {
@@ -100,7 +114,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const taskDescription = interaction.data.options[1].value;
       const taskDeadline = interaction.data.options[2].value;
       const totalTask = (await taskModel.find({})).length;
-      console.log({ totalTask });
+
       const newTask = new taskModel({
         taskDescription,
         taskInfo,
@@ -121,7 +135,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allTasks = await taskModel.find({});
       const fields = allTasks.map((x) => {
         return {
-          name: `\u200B \n${x.taskInfo} - id: ${x.taskCustomId}`,
+          name: `\u200B \n${x.taskInfo} - id { ${x.taskCustomId} }`,
           value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
         };
       });
