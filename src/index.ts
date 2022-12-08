@@ -40,7 +40,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 
       const embeds = [
         {
-          title: "All Links",
+          title: `${interaction.member.user.username} created a new link`,
           fields: [
             {
               name: linkName,
@@ -63,7 +63,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `\n`,
+          name: `==================`,
           value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
@@ -108,7 +108,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const fields = allTasks.map((x) => {
         return {
           name: `================= \n${x.taskInfo} [id:${x.taskCustomId}]`,
-          value: `${x.taskDescription} \nuntil: ${x.taskDeadline}`,
+          value: `${x.taskDescription} \n ${x.taskDeadline ? `until: ${x.taskDeadline}` : ""}`,
         };
       });
       const embeds = [
