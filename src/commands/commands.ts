@@ -18,6 +18,18 @@ export const slashCommands = [
     ],
   },
   {
+    name: "delete-task",
+    description: "delete a task by ID",
+    options: [
+      {
+        type: 3,
+        name: "Enter the task ID",
+        description: "You can view the task id by doing /see-tasks",
+        required: true,
+      },
+    ],
+  },
+  {
     name: "schedule",
     description: "BSIT 2-A School Schedule",
     options: [],
@@ -25,11 +37,6 @@ export const slashCommands = [
   {
     name: "see-tasks",
     description: "See all tasks",
-    options: [],
-  },
-  {
-    name: "hello",
-    description: "Szzzs",
     options: [],
   },
 ];

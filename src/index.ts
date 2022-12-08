@@ -19,13 +19,13 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   console.log(`======================================================`);
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-    console.log(interaction.data);
-
-    if (interaction.data.name == "yo") {
+    if (interaction.data.name == "delete-task") {
+      const customTaskId = interaction.data.options[0].value;
+      const task = await taskModel.findOneAndDelete({ taskCustomId: customTaskId });
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `Yo ${interaction.member.user.username}!`,
+          content: `**${interaction.member.user.username} deleted a task** \n${task?.taskInfo} \n${task?.taskDescription}`,
         },
       });
     }
