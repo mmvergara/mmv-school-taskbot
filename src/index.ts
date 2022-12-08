@@ -38,18 +38,32 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const newLink = new linkModel({ linkName, linkUrl });
       await newLink.save();
 
+      const embeds = [
+        {
+          title: "All Links",
+          fields: [
+            {
+              name: linkName,
+              value: linkUrl,
+            },
+          ],
+          color: 4321431,
+        },
+      ];
+
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `**${interaction.member.user.username} created a new link** \n[${linkName}](${linkUrl})`,
-        },
+        data: { embeds },
       });
     }
+    if (interaction.data.name == "delete-link") {
+    }
+
     if (interaction.data.name == "see-links") {
       const allLinks = await linkModel.find({});
       const fields = allLinks.map((x) => {
         return {
-          name: `-------------\n`,
+          name: `\n`,
           value: `[${x.linkName}](${x.linkUrl})`,
         };
       });
@@ -70,11 +84,13 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if (interaction.data.name == "create-task") {
       const taskInfo = interaction.data.options[0].value;
       const taskDescription = interaction.data.options[1].value;
+      const taskDeadline = interaction.data.options[2].value;
       const totalTask = (await taskModel.find({})).length;
       console.log({ totalTask });
       const newTask = new taskModel({
         taskDescription,
         taskInfo,
+        taskDeadline,
         taskCustomId: String(totalTask + 1),
       });
       await newTask.save();
@@ -82,7 +98,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `**${interaction.member.user.username} created a new task** \n${taskInfo} \n${taskDescription}`,
+          content: `**${interaction.member.user.username} created a new task** \n${taskInfo} \n${taskDescription}\nuntil: ${taskDeadline}`,
         },
       });
     }
@@ -92,7 +108,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       const fields = allTasks.map((x) => {
         return {
           name: `================= \n${x.taskInfo} [id:${x.taskCustomId}]`,
-          value: x.taskDescription,
+          value: `${x.taskDescription} \nuntil: ${x.taskDeadline}`,
         };
       });
       const embeds = [

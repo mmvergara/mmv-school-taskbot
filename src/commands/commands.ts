@@ -15,6 +15,12 @@ export const slashCommands = [
         description: "Description of the task",
         required: true,
       },
+      {
+        type: 3,
+        name: "task-deadline",
+        description: "Deadline (optional)",
+        required: true,
+      },
     ],
   },
   {
