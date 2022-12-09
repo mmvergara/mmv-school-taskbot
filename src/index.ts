@@ -4,29 +4,33 @@ import {
   InteractionType,
   verifyKeyMiddleware,
 } from "discord-interactions";
+
 import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import { slashCommands } from "./commands/commands";
 import express from "express";
 import mongoose from "mongoose";
+
 import {
   createTaskCommand,
   deleteTaskCommand,
   seeTaskCommand,
 } from "./controllers/taskControllers";
+
 import {
   createLinkCommand,
   deleteLinkCommand,
   seeLinksCommand,
 } from "./controllers/linkControllers";
+
 import { scheduleCommand } from "./controllers/customControllers";
 import axios from "axios";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body as any;
-  const studentRoleId = "1045624430686130216";
-  
-  if (!interaction.member?.roles.includes(studentRoleId)) {
+  const studentRoleId = process.env.STUDENTROLE_ID || null;
+
+  if (!studentRoleId || !interaction.member?.roles.includes(String(studentRoleId))) {
     return res.send({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: { content: `You don't have permission to use this bot. Contact a moderator.` },
@@ -34,6 +38,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   }
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
+    //Tasks Command
     if (interaction.data.name == "create-task") {
       return await createTaskCommand(interaction, res);
     }
@@ -44,7 +49,7 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       return await deleteTaskCommand(interaction, res);
     }
 
-    //Links
+    //Links Command
     if (interaction.data.name == "create-link") {
       return await createLinkCommand(interaction, res);
     }

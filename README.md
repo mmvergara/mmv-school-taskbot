@@ -19,10 +19,12 @@ PORT=
 
 
 <!-- optional -->
+STUDENTROLE_ID=
 DEPLOYMENT_URL=
 <!-- optional -->
 ```
 
+> Note: STUDENTROLE_ID This is when you to limit the bot commands to users with a specific role only.
 > Note: DEPLOYMENT_URL This is when you want to use uptime websites, this will send a post request in the interaction route.
 
 - npm build
