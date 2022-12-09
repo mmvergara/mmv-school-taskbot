@@ -4,7 +4,6 @@ import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import { slashCommands } from "./commands/commands";
 import express from "express";
 import mongoose from "mongoose";
-
 import {
   createTaskCommand,
   deleteTaskCommand,
@@ -22,7 +21,10 @@ const app = express();
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body as any;
   console.log(`======================================================`);
-  console.log({ interaction });
+  console.log(interaction);
+  console.log(interaction.member);
+  console.log(interaction.member?.roles);
+  console.log(interaction.member?.user);
   console.log(`======================================================`);
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
