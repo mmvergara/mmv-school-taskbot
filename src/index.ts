@@ -1,16 +1,10 @@
-import express from "express";
 import { discord_api } from "./api";
-import {
-  InteractionType,
-  InteractionResponseType,
-  verifyKeyMiddleware,
-} from "discord-interactions";
-
+import { InteractionType, verifyKeyMiddleware } from "discord-interactions";
 import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
-import mongoose from "mongoose";
-import taskModel from "./models/taskModel";
 import { slashCommands } from "./commands/commands";
-import linkModel from "./models/linkModel";
+import express from "express";
+import mongoose from "mongoose";
+
 import {
   createTaskCommand,
   deleteTaskCommand,
@@ -22,6 +16,7 @@ import {
   seeLinksCommand,
 } from "./controllers/linkControllers";
 import { scheduleCommand } from "./controllers/customControllers";
+import axios from "axios";
 const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
@@ -61,6 +56,13 @@ app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
+  //Uptime robot
+  // You can remove this code, this is just for making sure the commands are up all the time
+  if (process.env.DEPLOYMENT_URL) {
+    axios.post(`${process.env.DEPLOYMENT_URL}/interactions`);
+  }
+  //Uptime robot
+
   return res.send("Hello World");
 });
 
