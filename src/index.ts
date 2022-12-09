@@ -1,5 +1,9 @@
 import { discord_api } from "./api";
-import { InteractionType, verifyKeyMiddleware } from "discord-interactions";
+import {
+  InteractionResponseType,
+  InteractionType,
+  verifyKeyMiddleware,
+} from "discord-interactions";
 import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import { slashCommands } from "./commands/commands";
 import express from "express";
@@ -20,12 +24,14 @@ const app = express();
 
 app.post("/interactions", verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body as any;
-  console.log(`======================================================`);
-  console.log(interaction);
-  console.log(interaction.member);
-  console.log(interaction.member?.roles);
-  console.log(interaction.member?.user);
-  console.log(`======================================================`);
+  const studentRoleId = "1045624430686130216";
+  
+  if (!interaction.member?.roles.includes(studentRoleId)) {
+    return res.send({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: { content: `You don't have permission to use this bot. Contact a moderator.` },
+    });
+  }
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     if (interaction.data.name == "create-task") {
