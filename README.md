@@ -30,3 +30,4 @@ DEPLOYMENT_URL=
 - npm build
 - npm start
 - npm start:dev
+- go to `YOUR_URL/rc` to register comands
