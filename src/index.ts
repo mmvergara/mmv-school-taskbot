@@ -1,26 +1,14 @@
 import { discord_api } from "./api";
-import {
-  InteractionResponseType,
-  InteractionType,
-  verifyKeyMiddleware,
-} from "discord-interactions";
+import { InteractionResponseType, InteractionType, verifyKeyMiddleware } from "discord-interactions";
 
 import { APPLICATION_ID, GUILD_ID, MONGODB_URI, PUBLIC_KEY } from "./config";
 import { slashCommands } from "./commands/commands";
 import express from "express";
 import mongoose from "mongoose";
 
-import {
-  createTaskCommand,
-  deleteTaskCommand,
-  seeTaskCommand,
-} from "./controllers/taskControllers";
+import { createTaskCommand, deleteTaskCommand, seeTaskCommand } from "./controllers/taskControllers";
 
-import {
-  createLinkCommand,
-  deleteLinkCommand,
-  seeLinksCommand,
-} from "./controllers/linkControllers";
+import { createLinkCommand, deleteLinkCommand, seeLinksCommand } from "./controllers/linkControllers";
 
 import { scheduleCommand } from "./controllers/customControllers";
 import axios from "axios";
